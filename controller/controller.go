@@ -19,7 +19,9 @@ import (
 	"app-mask/services"
 )
 
-const dbAddress = "test:test@/MASK"
+var DbAddress = "test:test@tcp(10.98.0.40:3306)/MASK"
+
+// const DbAddress = "test:test@/MASK"
 
 type ApiResponse struct {
 	ResultCode    string
@@ -76,6 +78,10 @@ type Inventory struct {
 	Stock   int32
 }
 
+func InitDBAddress(ip string) {
+	DbAddress = "test:test@tcp(" + ip + ":3306)/MASK"
+}
+
 // 登入
 func SignIn(w http.ResponseWriter, r *http.Request) {
 	var user User
@@ -100,7 +106,7 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -159,7 +165,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -238,7 +244,7 @@ func QueryStockByDate(w http.ResponseWriter, r *http.Request) {
 	}
 	date = vars["date"]
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -285,7 +291,7 @@ func QueryStore(w http.ResponseWriter, r *http.Request) {
 	var storeList []Store
 	var resMsg ApiResponse
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -348,7 +354,7 @@ func QueryStockByStore(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -412,7 +418,7 @@ func QueryHistoryOrder(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -457,7 +463,7 @@ func QueryHistoryOrder(w http.ResponseWriter, r *http.Request) {
 // 查詢前次購買日期
 func queryLastBuyDate(userID int) (string, error) {
 	var inventoryIDList []int
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		return "", err
 	}
@@ -501,7 +507,7 @@ func queryLastBuyDate(userID int) (string, error) {
 
 // 查詢某店家某日存量編號及口罩存量
 func queryStockByStoreAndDate(storeID int, date string) (int32, int32, error) {
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		return -1, -1, err
 	}
@@ -526,7 +532,7 @@ func queryStockByStoreAndDate(storeID int, date string) (int32, int32, error) {
 // > 3 return false
 // <= 3 return true
 func countPickUp(userID int) (int32, error) {
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		return -1, err
 	}
@@ -591,7 +597,7 @@ func queryOrderByUserID(userID int) (bool, error) {
 	var inventoryID sql.NullInt32
 	var date sql.NullString
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		return true, err
 	}
@@ -737,7 +743,7 @@ func Book(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("count: %v\n", count)
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -812,7 +818,7 @@ func CancelOrder(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -899,7 +905,7 @@ func queryOrderByID(orderID int32) (OrderForm, error) {
 	var order OrderForm
 	log.Println("orderID: ", orderID)
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		return order, err
 	}
@@ -929,7 +935,7 @@ func queryOrderByID(orderID int32) (OrderForm, error) {
 func queryInventoryByID(inventoryID int32) (Inventory, error) {
 	var inventory Inventory
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		return inventory, err
 	}
@@ -961,7 +967,7 @@ func QueryUser(w http.ResponseWriter, r *http.Request) {
 	var userList []User
 	var resMsg ApiResponse
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -1009,7 +1015,7 @@ func QueryOrder(w http.ResponseWriter, r *http.Request) {
 	var orderList []OrderForm
 	var resMsg ApiResponse
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -1056,7 +1062,7 @@ func QueryInventory(w http.ResponseWriter, r *http.Request) {
 	var inventoryList []Inventory
 	var resMsg ApiResponse
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -1123,7 +1129,7 @@ func InsertInventory(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -1208,7 +1214,7 @@ func InsertStore(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.
@@ -1261,7 +1267,7 @@ func PickUp(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	db, err := sql.Open("mysql", dbAddress)
+	db, err := sql.Open("mysql", DbAddress)
 	if err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err // Server cannot connect to database.

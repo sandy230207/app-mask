@@ -3,14 +3,14 @@ CREATE DATABASE MASK;
 CREATE TABLE MASK.USER(
     id int(11) NOT NULL AUTO_INCREMENT,
     pid varchar(10) NOT NULL,
-    name varchar(10) NOT NULL,
+    name varchar(100) NOT NULL,
     passwd varchar(256) NOT NULL,
     PRIMARY KEY(id)
 );
 
 CREATE TABLE MASK.STORE(
     id int(11) NOT NULL AUTO_INCREMENT,
-    name varchar(10) NOT NULL,
+    name varchar(100) NOT NULL,
     PRIMARY KEY(id)
 );
 
