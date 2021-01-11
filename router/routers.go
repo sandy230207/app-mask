@@ -35,6 +35,9 @@ func init() {
 	register("POST", "/api/insertInventory", controller.InsertInventory, nil) // ok
 	register("POST", "/api/insertStore", controller.InsertStore, nil)         // ok
 	register("POST", "/api/pickUp", controller.PickUp, nil)                   // ok
+
+	register("GET", "/api/healthCheck", controller.HealthCheck, nil) // ok
+
 }
 
 func NewRouter() *mux.Router {

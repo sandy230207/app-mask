@@ -1296,3 +1296,11 @@ func PickUp(w http.ResponseWriter, r *http.Request) {
 	resMsg = ApiResponse{"200", "Pick Up Successfully!"}
 	services.ResponseWithJson(w, http.StatusOK, resMsg)
 }
+
+// Health check
+func HealthCheck(w http.ResponseWriter, r *http.Request) {
+	var resMsg ApiResponse
+
+	resMsg = ApiResponse{"200", "OK!"}
+	services.ResponseWithJson(w, http.StatusOK, resMsg)
+}
