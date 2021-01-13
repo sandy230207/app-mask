@@ -625,7 +625,7 @@ func queryOrderByUserID(userID int) (bool, error) {
 		return true, err
 	}
 	if timeDifference <= 0 {
-		return true, errors.New("You have a book in the next _ day or now in future.")
+		return true, nil
 	}
 
 	return false, nil
@@ -740,7 +740,7 @@ func Book(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	if count > 3 {
+	if count >= 3 {
 		resMsg.ResultCode = "415"
 		resMsg.ResultMessage = "User has not picked up the mask more than 3 times."
 		services.ResponseWithJson(w, http.StatusOK, resMsg)
