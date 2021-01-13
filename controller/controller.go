@@ -664,7 +664,7 @@ func Book(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if timeDifference >= 0 {
-		resMsg.ResultCode = "400"
+		resMsg.ResultCode = "411"
 		resMsg.ResultMessage = "Cannot book the mask when the date <= now."
 		services.ResponseWithJson(w, http.StatusOK, resMsg)
 		log.Printf("Now - date = %v\n", timeDifference)
@@ -691,7 +691,7 @@ func Book(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if timeDifference < 336 {
-		resMsg.ResultCode = "400"
+		resMsg.ResultCode = "412"
 		resMsg.ResultMessage = "Now - lastBuyDate < 336 hr (14 days)"
 		services.ResponseWithJson(w, http.StatusOK, resMsg)
 		log.Println("Now - lastBuyDate < 336 hr (14 days)")
@@ -699,11 +699,17 @@ func Book(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 是否有已成立但未取消之訂單
-	if ok, err := queryOrderByUserID(order.UserID); err != nil || ok {
+	if ok, err := queryOrderByUserID(order.UserID); err != nil {
 		resMsg.ResultCode = "500"
 		resMsg.ResultMessage = err
 		services.ResponseWithJson(w, http.StatusOK, resMsg)
 		log.Println(err)
+		return
+	} else if ok {
+		resMsg.ResultCode = "413"
+		resMsg.ResultMessage = "You have an existed order."
+		services.ResponseWithJson(w, http.StatusOK, resMsg)
+		log.Println("You have an existed order.")
 		return
 	}
 
@@ -717,7 +723,7 @@ func Book(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if inventoryID == -1 || stock == -1 {
-		resMsg.ResultCode = "400"
+		resMsg.ResultCode = "414"
 		resMsg.ResultMessage = "The store has no inventory on that day."
 		services.ResponseWithJson(w, http.StatusOK, resMsg)
 		log.Println("The store has no inventory on that day.")
@@ -735,7 +741,7 @@ func Book(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if count > 3 {
-		resMsg.ResultCode = "400"
+		resMsg.ResultCode = "415"
 		resMsg.ResultMessage = "User has not picked up the mask more than 3 times."
 		services.ResponseWithJson(w, http.StatusOK, resMsg)
 		log.Println("The store has no inventory on that day.")
