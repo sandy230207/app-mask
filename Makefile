@@ -8,7 +8,7 @@ db-build:
 		-t $(db_name) .
 
 db-run:
-	docker run -d \
+	docker run --rm -d \
 		--name=mask-db \
 		-p 3306:3306 \
 		--env MYSQL_ROOT_PASSWORD=password \
